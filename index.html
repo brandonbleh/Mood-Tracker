@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📔 Mood Tracker</h1>
+            <p>Track your emotions throughout the day</p>
+        </header>
+
+        <main>
+            <!-- Mood Input Form -->
+            <section class="form-section">
+                <div class="form-card">
+                    <h2>How are you feeling today?</h2>
+                    
+                    <div class="mood-selection">
+                        <button class="mood-btn" data-mood="Happy" data-emoji="😊">
+                            <span class="emoji">😊</span>
+                            <span class="mood-label">Happy</span>
+                        </button>
+                        <button class="mood-btn" data-mood="Okay" data-emoji="😐">
+                            <span class="emoji">😐</span>
+                            <span class="mood-label">Okay</span>
+                        </button>
+                        <button class="mood-btn" data-mood="Sad" data-emoji="😢">
+                            <span class="emoji">😢</span>
+                            <span class="mood-label">Sad</span>
+                        </button>
+                        <button class="mood-btn" data-mood="Angry" data-emoji="😠">
+                            <span class="emoji">😠</span>
+                            <span class="mood-label">Angry</span>
+                        </button>
+                        <button class="mood-btn" data-mood="Tired" data-emoji="😴">
+                            <span class="emoji">😴</span>
+                            <span class="mood-label">Tired</span>
+                        </button>
+                        <button class="mood-btn" data-mood="Stressed" data-emoji="😰">
+                            <span class="emoji">😰</span>
+                            <span class="mood-label">Stressed</span>
+                        </button>
+                    </div>
+
+                    <div class="note-section">
+                        <label for="note">Add a note (optional):</label>
+                        <textarea id="note" placeholder="What's on your mind?"></textarea>
+                    </div>
+
+                    <button id="save-btn" class="save-btn" disabled>Save Mood</button>
+                    <span id="selected-mood" class="selected-mood"></span>
+                </div>
+            </section>
+
+            <!-- Mood History -->
+            <section class="history-section">
+                <div class="history-header">
+                    <h2>📊 Mood History</h2>
+                    <button id="clear-all-btn" class="clear-all-btn">Clear All</button>
+                </div>
+                <div id="mood-history" class="mood-history">
+                    <p class="empty-message">No mood entries yet. Start by selecting a mood above!</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
