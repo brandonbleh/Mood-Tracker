@@ -1,0 +1,423 @@
+/* ===== General Styles ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ===== Header ===== */
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.header p {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+    flex: 1;
+    padding: 40px 30px;
+}
+
+/* ===== Form Section ===== */
+.form-section {
+    margin-bottom: 50px;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.form-section h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* ===== Mood Selector ===== */
+.mood-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.mood-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.mood-emoji {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.mood-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+}
+
+.mood-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* ===== Selected Mood Display ===== */
+.selected-mood {
+    text-align: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+    color: #666;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Note Section ===== */
+.note-section {
+    margin-bottom: 20px;
+}
+
+.note-section label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.note-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.95rem;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.note-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ===== Save Button ===== */
+.save-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+/* ===== History Section ===== */
+.history-section {
+    margin-bottom: 20px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.history-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.clear-all-btn {
+    padding: 10px 15px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.clear-all-btn:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+/* ===== Entries Container ===== */
+.entries-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 40px 20px;
+    font-size: 1rem;
+}
+
+/* ===== Mood Card ===== */
+.mood-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mood-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: #667eea;
+}
+
+.mood-card.happy {
+    border-left: 5px solid #ffd93d;
+}
+
+.mood-card.okay {
+    border-left: 5px solid #6bcf7f;
+}
+
+.mood-card.sad {
+    border-left: 5px solid #4ecdc4;
+}
+
+.mood-card.angry {
+    border-left: 5px solid #ff6b6b;
+}
+
+.mood-card.tired {
+    border-left: 5px solid #a8a8a8;
+}
+
+.mood-card.stressed {
+    border-left: 5px solid #ee5a6f;
+}
+
+.mood-card-content {
+    flex: 1;
+}
+
+.mood-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-emoji {
+    font-size: 2rem;
+    margin-right: 12px;
+}
+
+.card-mood-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.card-note {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.card-timestamp {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.delete-btn {
+    padding: 8px 12px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    margin-left: 15px;
+}
+
+.delete-btn:hover {
+    background: #ff5252;
+    transform: scale(1.05);
+}
+
+/* ===== Footer ===== */
+.footer {
+    background: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 600px) {
+    .container {
+        border-radius: 0;
+        min-height: 100vh;
+    }
+
+    .header {
+        padding: 30px 20px;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+
+    .mood-selector {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .mood-btn {
+        padding: 12px;
+    }
+
+    .mood-emoji {
+        font-size: 1.5rem;
+    }
+
+    .mood-btn span:not(.mood-emoji) {
+        font-size: 0.8rem;
+    }
+
+    .history-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .clear-all-btn {
+        width: 100%;
+    }
+
+    .mood-card {
+        flex-direction: column;
+    }
+
+    .delete-btn {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .header p {
+        font-size: 0.9rem;
+    }
+
+    .form-section h2,
+    .history-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .mood-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
