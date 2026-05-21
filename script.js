@@ -1,255 +1,184 @@
 // ===== Data Management =====
-
-// Mood configuration with emojis and colors
-const moods = {
-    'Happy': { emoji: '😊', class: 'happy' },
-    'Okay': { emoji: '😐', class: 'okay' },
-    'Sad': { emoji: '😢', class: 'sad' },
-    'Angry': { emoji: '😠', class: 'angry' },
-    'Tired': { emoji: '😴', class: 'tired' },
-    'Stressed': { emoji: '😰', class: 'stressed' }
-};
-
-// Storage key for localStorage
 const STORAGE_KEY = 'moodTrackerEntries';
-
-// Current selected mood
-let currentMood = null;
 let entries = [];
+let selectedMood = null;
 
-// ===== Initialize App =====
-
-document.addEventListener('DOMContentLoaded', function() {
-    loadEntries();
-    setupEventListeners();
-    renderEntries();
-});
-
-// ===== Event Listeners =====
-
-function setupEventListeners() {
-    // Mood button listeners
-    const moodBtns = document.querySelectorAll('.mood-btn');
-    moodBtns.forEach(btn => {
-        btn.addEventListener('click', selectMood);
-    });
-
-    // Save button listener
-    document.getElementById('saveBtn').addEventListener('click', addEntry);
-
-    // Clear all button listener
-    document.getElementById('clearAllBtn').addEventListener('click', clearAllEntries);
-
-    // Enter key to save from note input
-    document.getElementById('noteInput').addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'Enter') {
-            addEntry();
-        }
-    });
-}
-
-// ===== Mood Selection =====
-
-function selectMood(event) {
-    const btn = event.currentTarget;
-    const mood = btn.dataset.mood;
-    const emoji = btn.dataset.emoji;
-
-    // Remove active class from all buttons
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
-
-    // Add active class to clicked button
-    btn.classList.add('active');
-
-    // Update current mood
-    currentMood = {
-        name: mood,
-        emoji: emoji
-    };
-
-    // Update selected mood display
-    updateSelectedMoodDisplay();
-}
-
-// ===== Selected Mood Display =====
-
-function updateSelectedMoodDisplay() {
-    const selectedMoodDiv = document.getElementById('selectedMood');
-    
-    if (currentMood) {
-        selectedMoodDiv.innerHTML = `
-            <div>
-                <span style="font-size: 1.8rem; margin-right: 10px;">${currentMood.emoji}</span>
-                <span style="font-size: 1.1rem; color: #333;">You selected: <strong>${currentMood.name}</strong></span>
-            </div>
-        `;
-    } else {
-        selectedMoodDiv.innerHTML = '<p>Select a mood above</p>';
+// ===== Load entries from localStorage on page load =====
+function loadEntries() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        entries = stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('Error loading entries:', error);
+        entries = [];
     }
 }
 
-// ===== Add Entry =====
+// ===== Save entries to localStorage =====
+function saveEntries() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    } catch (error) {
+        console.error('Error saving entries:', error);
+    }
+}
 
+// ===== Generate unique ID =====
+function generateId() {
+    return Date.now() + Math.random().toString(36).substr(2, 9);
+}
+
+// ===== Format timestamp =====
+function formatTimestamp(date) {
+    return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    }).format(date);
+}
+
+// ===== Add a new mood entry =====
 function addEntry() {
-    // Validate that a mood is selected
-    if (!currentMood) {
-        alert('Please select a mood first!');
+    if (!selectedMood) {
+        alert('Please select a mood!');
         return;
     }
 
-    // Get note from input
-    const noteInput = document.getElementById('noteInput');
-    const note = noteInput.value.trim();
+    const note = document.getElementById('note').value.trim();
+    const now = new Date();
 
-    // Create entry object
     const entry = {
-        id: Date.now(), // Use timestamp as unique ID
-        mood: currentMood.name,
-        emoji: currentMood.emoji,
+        id: generateId(),
+        mood: selectedMood.mood,
+        emoji: selectedMood.emoji,
         note: note,
-        timestamp: new Date().toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        })
+        timestamp: now.toISOString()
     };
 
-    // Add entry to array (newest first)
+    // Add to beginning of array (newest first)
     entries.unshift(entry);
-
-    // Save to localStorage
     saveEntries();
 
     // Clear form
-    clearForm();
-
-    // Re-render entries
+    document.getElementById('note').value = '';
+    selectedMood = null;
+    updateMoodSelection();
     renderEntries();
 }
 
-// ===== Clear Form =====
-
-function clearForm() {
-    // Clear note input
-    document.getElementById('noteInput').value = '';
-
-    // Clear mood selection
-    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
-    currentMood = null;
-    updateSelectedMoodDisplay();
-}
-
-// ===== Delete Entry =====
-
+// ===== Delete a single entry =====
 function deleteEntry(id) {
-    // Find and remove entry
     entries = entries.filter(entry => entry.id !== id);
-
-    // Save to localStorage
     saveEntries();
-
-    // Re-render entries
     renderEntries();
 }
 
-// ===== Clear All Entries =====
-
+// ===== Clear all entries =====
 function clearAllEntries() {
-    // Ask for confirmation
     if (entries.length === 0) {
         alert('No entries to clear!');
         return;
     }
 
-    const confirmed = confirm('Are you sure you want to delete all entries? This cannot be undone.');
-
-    if (confirmed) {
+    if (confirm('Are you sure you want to delete ALL mood entries? This cannot be undone.')) {
         entries = [];
         saveEntries();
         renderEntries();
     }
 }
 
-// ===== LocalStorage Functions =====
+// ===== Update selected mood display =====
+function updateMoodSelection() {
+    const moodBtns = document.querySelectorAll('.mood-btn');
+    const selectedMoodSpan = document.getElementById('selected-mood');
+    const saveBtn = document.getElementById('save-btn');
 
-// Load entries from localStorage
-function loadEntries() {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        
-        if (stored) {
-            entries = JSON.parse(stored);
-        } else {
-            entries = [];
-        }
-    } catch (error) {
-        console.error('Error loading entries from localStorage:', error);
-        entries = [];
+    moodBtns.forEach(btn => {
+        btn.classList.remove('selected');
+    });
+
+    if (selectedMood) {
+        moodBtns.forEach(btn => {
+            if (btn.dataset.mood === selectedMood.mood) {
+                btn.classList.add('selected');
+            }
+        });
+        selectedMoodSpan.textContent = `Selected: ${selectedMood.emoji} ${selectedMood.mood}`;
+        saveBtn.disabled = false;
+    } else {
+        selectedMoodSpan.textContent = '';
+        saveBtn.disabled = true;
     }
 }
 
-// Save entries to localStorage
-function saveEntries() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    } catch (error) {
-        console.error('Error saving entries to localStorage:', error);
-        alert('Could not save entry. Your browser storage may be full.');
-    }
-}
-
-// ===== Render Entries =====
-
+// ===== Render all mood entries =====
 function renderEntries() {
-    const container = document.getElementById('entriesContainer');
+    const historyContainer = document.getElementById('mood-history');
 
-    // Clear container
-    container.innerHTML = '';
-
-    // Check if there are entries
     if (entries.length === 0) {
-        container.innerHTML = '<p class="empty-message">No entries yet. Start tracking your mood!</p>';
+        historyContainer.innerHTML = '<p class="empty-message">No mood entries yet. Start by selecting a mood above!</p>';
         return;
     }
 
-    // Create card for each entry
-    entries.forEach(entry => {
-        const card = createMoodCard(entry);
-        container.appendChild(card);
-    });
-}
+    historyContainer.innerHTML = entries.map(entry => {
+        const date = new Date(entry.timestamp);
+        const formattedTime = formatTimestamp(date);
 
-// ===== Create Mood Card =====
-
-function createMoodCard(entry) {
-    const card = document.createElement('div');
-    card.className = `mood-card ${moods[entry.mood]?.class || ''}`;
-
-    // Format note (show "No note" if empty)
-    const noteText = entry.note ? entry.note : '<em>No note added</em>';
-
-    card.innerHTML = `
-        <div class="mood-card-content">
-            <div class="mood-card-header">
-                <span class="card-emoji">${entry.emoji}</span>
-                <span class="card-mood-name">${entry.mood}</span>
+        return `
+            <div class="mood-card">
+                <div class="mood-card-header">
+                    <div class="mood-info">
+                        <span class="mood-emoji">${entry.emoji}</span>
+                        <div>
+                            <div class="mood-name">${entry.mood}</div>
+                            <div class="mood-time">${formattedTime}</div>
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteEntry('${entry.id}')">Delete</button>
+                </div>
+                ${entry.note ? `<div class="mood-note">${escapeHtml(entry.note)}</div>` : ''}
             </div>
-            <div class="card-note">${escapeHtml(noteText)}</div>
-            <div class="card-timestamp">${entry.timestamp}</div>
-        </div>
-        <button class="delete-btn" onclick="deleteEntry(${entry.id})">Delete</button>
-    `;
-
-    return card;
+        `;
+    }).join('');
 }
 
-// ===== Utility Functions =====
-
-// Escape HTML to prevent XSS
+// ===== Escape HTML to prevent XSS =====
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ===== Event Listeners =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Load existing entries
+    loadEntries();
+    renderEntries();
+
+    // Mood selection buttons
+    const moodBtns = document.querySelectorAll('.mood-btn');
+    moodBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            selectedMood = {
+                mood: this.dataset.mood,
+                emoji: this.dataset.emoji
+            };
+            updateMoodSelection();
+        });
+    });
+
+    // Save button
+    document.getElementById('save-btn').addEventListener('click', addEntry);
+
+    // Clear all button
+    document.getElementById('clear-all-btn').addEventListener('click', clearAllEntries);
+
+    // Allow Enter key to submit note and save
+    document.getElementById('note').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && event.ctrlKey) {
+            addEntry();
+        }
+    });
+});
